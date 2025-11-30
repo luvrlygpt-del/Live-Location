@@ -11,7 +11,7 @@ app.use(cors()); // Enable CORS
 // Lưu vị trí người dùng trong bộ nhớ
 let users = {}; // key: username, value: {lat, lon}
 
-// POST /location - nhận vị trí người dùng
+// POST /location - nhận vị trí người dùng và cập nhật
 app.post('/location', (req, res) => {
     const { lat, lon, username } = req.body;
 
@@ -50,7 +50,7 @@ app.get('/location', (req, res) => {
 
 // Đặt URL mặc định tại "/"
 app.get('/', (req, res) => {
-    res.send('<h1>Welcome to Location Tracker </p>');
+    res.send('<h1>Welcome to Location Tracker API</h1>');
 });
 
 // Start server
@@ -66,5 +66,5 @@ app.listen(PORT, () => {
         } catch (error) {
             console.error("Error pinging server:", error);
         }
-    }, 300000); // 300000ms = 5 phút
+    }, 15000); 
 });

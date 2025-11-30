@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors()); // Enable CORS
 
 // Lưu vị trí người dùng trong bộ nhớ
 let users = {}; // key: username, value: {lat, lon}
@@ -21,7 +21,19 @@ app.post('/location', (req, res) => {
 
     const name = username && username.trim() !== '' ? username.trim() : 'private user';
 
-    users[name] = { lat, lon };
+    // Kiểm tra người dùng mới
+    if (!users[name]) {
+        console.log(`Đã có người mới vào: ${name}`);
+    } else {
+        // Kiểm tra người dùng có thay đổi tên không
+        const oldUsername = users[name].username;
+        if (oldUsername !== name) {
+            console.log(`Đổi tên từ "${oldUsername}" -> "${name}"`);
+        }
+    }
+
+    // Cập nhật vị trí người dùng
+    users[name] = { lat, lon, username: name };
 
     res.json({ status: 'ok' });
 });
@@ -38,7 +50,7 @@ app.get('/location', (req, res) => {
 
 // Đặt URL mặc định tại "/"
 app.get('/', (req, res) => {
-    res.send('<h1>Welcome to Location Tracker API</h1><p>Use POST /location to send your position</p>');
+    res.send('<h1>Welcome to Location Tracker </p>');
 });
 
 // Start server
@@ -49,7 +61,7 @@ app.listen(PORT, () => {
     setInterval(async () => {
         try {
             // Gọi lại chính nó (đảm bảo server luôn hoạt động)
-            await axios.get(`http://localhost:${PORT}`);
+            await axios.get(`https://live-location-z40f.onrender.com`); // Thay thế với URL của bạn trên Render
             console.log("Ping to keep the server awake");
         } catch (error) {
             console.error("Error pinging server:", error);
